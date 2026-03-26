@@ -1,70 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insta Reel Downloader</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Premium Insta Reel Downloader</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 50px; }
-        .main-card { max-width: 450px; margin: auto; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .preview-container { margin-top: 25px; border-radius: 15px; overflow: hidden; border: 1px solid #eee; background: #fafafa; }
-        video { width: 100%; border-radius: 10px; }
-        #loading-section { display: none; margin-top: 20px; }
-        .btn-custom { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; border: none; font-weight: bold; }
-        .btn-custom:hover { color: white; opacity: 0.9; }
+        /* Instagram Gradient Background */
+        body { 
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            padding-top: 20px;
+            color: #262626;
+        }
+
+        /* QR Code Styling (Top Right) */
+        .qr-header {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+        .qr-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+        }
+        .qr-header p {
+            margin: 5px 0 0;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Main Card Styling */
+        .card { 
+            border-radius: 20px; 
+            border: none; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            margin-top: 80px; /* Space for logo/QR */
+            background: #fff;
+        }
+
+        /* Instagram Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .logo-section img {
+            width: 60px; /* Insta icon size */
+            margin-bottom: 10px;
+        }
+        .logo-section h3 {
+            font-weight: 700;
+            background: -webkit-linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Premium Input styling */
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #dbdbdb;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+        .form-control:focus {
+            border-color: #a307ba;
+            box-shadow: 0 0 0 0.2rem rgba(199, 21, 133, 0.15);
+        }
+
+        /* Insta Style Button */
+        .insta-btn { 
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+            color: white; 
+            border: none; 
+            font-weight: bold; 
+            padding: 12px;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+        .insta-btn:hover { 
+            opacity: 0.95; 
+            color: white; 
+            transform: translateY(-2px);
+        }
+        .insta-btn:disabled {
+            background: #dbdbdb;
+        }
+
+        /* Preview Area */
+        #loading-section { display: none; margin-top: 25px; text-align: center; }
+        .spinner-border { color: #dc2743; } /* Insta red spinner */
+        
+        video { 
+            width: 100%; 
+            border-radius: 15px; 
+            margin-top: 20px; 
+            border: 2px solid #efefef; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .preview-label { font-size: 0.9rem; color: #8e8e8e; font-weight: 600; margin-top: 15px; text-align: center; }
+        
+        /* Download Button */
+        .download-btn {
+            background-color: #0095f6; /* Insta blue */
+            color: white;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .download-btn:hover {
+            background-color: #1877f2;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
 
+<div class="qr-header">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=9823714470@nyes&pn=InstaDownloader&cu=INR" alt="UPI QR Code">
+    <p>Support Us<br><span style="font-size:0.65rem; color:#666;">9823714470@nyes</span></p>
+</div>
+
 <div class="container">
-    <div class="main-card text-center">
-        <h3 class="mb-4">Instagram Downloader</h3>
-        
-        <form id="download-form" method="POST">
-            <div class="mb-3">
-                <input type="text" name="url" id="video-url" class="form-control" placeholder="Paste Reel Link Here..." required>
-            </div>
-            <button type="submit" class="btn btn-custom w-100" id="submit-btn">
-                <span id="btn-text">Get Video</span>
-            </button>
-        </form>
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-sm-10">
+            <div class="card p-4">
+                
+                <div class="logo-section">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo">
+                    <h3>Reel Downloader</h3>
+                </div>
+                
+                <form id="instaForm" method="POST">
+                    <div class="mb-3">
+                        <input type="text" name="url" id="urlInput" class="form-control" placeholder="Paste Instagram Reel link here..." required>
+                    </div>
+                    <button type="submit" id="submitBtn" class="btn insta-btn w-100">Fetch Video</button>
+                </form>
 
-        <div id="loading-section">
-            <div class="spinner-border text-danger" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2 text-muted">Fetching your video, please wait...</p>
-        </div>
+                <div id="loading-section">
+                    <div class="spinner-border" role="status"></div>
+                    <p class="mt-2 text-muted" style="font-size:0.9rem;">Securing your video... Please wait.</p>
+                </div>
 
-        {% if video_url %}
-        <div id="preview-section" class="preview-container p-2">
-            <h6 class="text-muted mb-2">Preview</h6>
-            <video controls id="player">
-                <source src="{{ video_url }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="mt-3">
-                <a href="{{ video_url }}" target="_blank" class="btn btn-success w-100 mb-2" download>Download Now</a>
+                {% if video_url %}
+                <div id="preview-box">
+                    <p class="preview-label">Preview</p>
+                    <video controls autoplay muted loop>
+                        <source src="{{ video_url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="mt-3">
+                        <a href="{{ video_url }}" class="btn download-btn w-100" download="instagram_reels.mp4">Download Now</a>
+                    </div>
+                </div>
+                {% endif %}
+
             </div>
         </div>
-        {% endif %}
     </div>
 </div>
 
 <script>
-    const form = document.getElementById('download-form');
-    const loadingSection = document.getElementById('loading-section');
-    const submitBtn = document.getElementById('submit-btn');
-    const previewSection = document.getElementById('preview-section');
+    const form = document.getElementById('instaForm');
+    const loader = document.getElementById('loading-section');
+    const submitBtn = document.getElementById('submitBtn');
+    const previewBox = document.getElementById('preview-box');
 
     form.onsubmit = function() {
-        // Form submit hote hi spinner dikhao aur purana preview chhupao
-        loadingSection.style.display = 'block';
+        // Show Spinner
+        loader.style.display = 'block';
+        // Disable Button
         submitBtn.disabled = true;
-        if (previewSection) {
-            previewSection.style.display = 'none';
-        }
+        submitBtn.innerText = "Processing...";
+        // Hide old preview if submitting new link
+        if(previewBox) previewBox.style.display = 'none';
     };
 </script>
 
